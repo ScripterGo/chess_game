@@ -1,5 +1,5 @@
 
-export default class queen{
+export default class piece{
     constructor(){
         
     }

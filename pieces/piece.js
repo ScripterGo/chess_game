@@ -31,6 +31,33 @@ export default class piece{
         new_piece.img = "./chess_piece_images/" + color + "/" + type + ".png";
         new_piece.position = null;
         new_piece.chess_board = chess_board;
+        new_piece.img_element = null;
+
+        new_piece.create_img_element = function(size){
+            let new_img_element = new Image(size.x, size.y);
+            new_img_element.style.position = "absolute";
+            new_img_element.src = this.img;
+            this.img_element = new_img_element;
+        };
+
+        new_piece.move = function(cell_vec2){
+            let graphic_handler = this.chess_board.graphic_handler;
+            let relative_pos = graphic_handler.cell_to_pos(cell_vec2);
+            
+            this.img_element.style.top = relative_pos.y + graphic_handler.position.y;
+            this.img_element.style.left = relative_pos.x + graphic_handler.position.x;
+            this.position = cell_vec2;
+        }
+    
+        new_piece.spawn = function(){
+            if(this.img_element == null){
+                console.error("You have to create the img element first")
+            }else if(this.img_element.parentElement == document.body){
+                console.error("This piece had already been spawned");
+            }
+            document.body.appendChild(this.img_element);
+        }
         return new_piece;
     }
+
 }
