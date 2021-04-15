@@ -1,9 +1,49 @@
 
-import graphics from "./graphic_handler.js"
+import graphics from "./graphic_handler.js";
+import vector2 from "./math/vector.js";
+import piece from "./pieces/piece.js";
 
 export default class chess_board{
     constructor(){
-        this.test_board = 5;
-        this.graphic_board = new graphics(this);
+        this.graphic_handler = new graphics(this);
+        this.grid = [];
+        for(let i=0; i < 8; i++){
+            this.grid.push([null, null, null, null, null, null, null, null]);
+        }
     }
+
+    move(cell_vec_2, piece){
+        let piece_pos = piece.position;
+        if(piece_pos != null && this.grid[piece_pos.y][piece_pos.x] == piece){
+            this.grid[piece_pos.y][piece_pos.x] = null;
+        }
+        this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
+        this.graphic_handler.move(cell_vec_2, piece);
+        console.log("moving");
+    }
+
+    setup(start_row=0, color){
+        let first_row = [
+            new piece("rook", color, this),
+            new piece("knight", color, this),
+            new piece("bishop", color, this),
+            new piece("king", color, this),
+            new piece("queen", color, this),
+            new piece("bishop", color, this),
+            new piece("knight", color, this),
+            new piece("rook", color, this)
+        ]
+        for(let i=0; i < 8; i++){
+            this.grid[start_row][i] = first_row[i];
+            this.graphic_handler.place(new vector2(i, start_row), first_row[i]);
+        }
+        for(let i=0; i < 8; i++){
+            this.grid[start_row+1][i] = new piece("pawn", color, this);
+            this.graphic_handler.place(new vector2(i, start_row+1), this.grid[start_row+1][i])
+        }
+    }
+
+    setup_white(){this.setup(0, "white");}
+    setup_black(){this.setup(6,"black");}
+
 }

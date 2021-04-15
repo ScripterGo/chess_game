@@ -12,8 +12,12 @@ class game{
     }
 }
 
-let new_game = new game();
-new_game.chess_board.graphic_board.create_canvas(800, 800, 100, 100);
-let test_piece = new piece("queen", "black", new_game.chess_board);
-new_game.chess_board.graphic_board.place(new vector2(0,0), test_piece);
+window.onload = function(){
+    let new_game = new game();
+    new_game.chess_board.graphic_handler.create_canvas(500, 500, 0, 0);
+    let test_piece = new piece("queen", "black", new_game.chess_board);
+    new_game.chess_board.graphic_handler.place(new vector2(2,3), test_piece);
+    new_game.chess_board.setup(0, "white");
+    new_game.chess_board.graphic_handler.make_connections();
+}
 
