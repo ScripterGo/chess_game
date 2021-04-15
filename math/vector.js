@@ -4,6 +4,12 @@ export default class vector2{
         this.x = x;
         this.y = y;
     }
+
+    is_equal(other_vec_2){
+        if(!(other_vec_2 instanceof vector2)){console.error("tried to compare vector2 with non vector2");}
+        return this.x == other_vec_2.x && this.y == other_vec_2.y;
+    }
+
     add(other_vec_2){
         if(!(other_vec_2 instanceof vector2)){console.error("tried to add vector2 to non vector2");}
         return new vector2(this.x + other_vec_2.x, this.y + other_vec_2.y);
