@@ -2,12 +2,11 @@ import vector2 from "../math/vector.js";
 
 
 export default class piece{
-    constructor(){
-        this.y_dir = this.color == "white" ? 1 : -1;
+    constructor(color){
+        this.y_dir = color == "white" ? 1 : -1;
     }
 
     get_threatened_cells(){
-        let curr_pos = this.position;
         let y_dir = this.y_dir;
         let li = [
             new vector2(0, y_dir),
@@ -16,7 +15,7 @@ export default class piece{
         ];
         let finalized = [];
         for(let i = 0; i < li.length; i++){
-            curr_pos.add(li[i]);
+            let curr_pos = this.position.add(li[i])
             if(curr_pos.x >= 0 && curr_pos.x <= 7 && curr_pos.y >= 0 && curr_pos.y <= 7){
                 finalized.push(new vector2(curr_pos.x, curr_pos.y));
             }

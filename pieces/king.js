@@ -6,7 +6,7 @@ export default class king{
         
     }
 
-    get_threathened_cells(){ //does not bother to check if same colored pieced are on threat cells
+    get_threatened_cells(){ //does not bother to check if same colored pieced are on threat cells
         let pos_vec2 = this.position;
         let li = [
             new vector2(0,1),

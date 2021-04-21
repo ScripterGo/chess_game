@@ -5,7 +5,7 @@ export default class knight{
         
     }
 
-    get_threathened_cells(){
+    get_threatened_cells(){
         let curr_pos = this.position;
         let li = [
             new vector2(-2, 1),
@@ -19,11 +19,11 @@ export default class knight{
         ]
         let finalized = [];
         for(let i = 0; i < li.length; i++){
-            curr_pos.add(li[i]);
+            curr_pos = curr_pos.add(li[i]);
             if(curr_pos.x >= 0 && curr_pos.x <= 7 && curr_pos.y >= 0 && curr_pos.y <= 7){
                 finalized.push(new vector2(curr_pos.x, curr_pos.y));
             }
-            curr_pos.subtract(li[i]);
+            curr_pos = curr_pos.subtract(li[i]);
         }
         return finalized;
     }

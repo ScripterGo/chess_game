@@ -7,7 +7,7 @@ import knight from "./knight.js";
 import pawn from "./pawn.js";
 import vector2 from "../math/vector.js";
 
-function create_piece(type){
+function create_piece(type, color){
     if(type == "queen"){
         return new queen();
     }else if(type == "king"){
@@ -19,14 +19,14 @@ function create_piece(type){
     }else if(type == "rook"){
         return new rook();
     }else if(type == "pawn"){
-        return new pawn();
+        return new pawn(color);
     }
     console.error("Not a valid type");
 }
 
 export default class piece{
     constructor(type, color, chess_board){
-        let new_piece = create_piece(type);
+        let new_piece = create_piece(type, color);
         new_piece.color = color;
         new_piece.img = "./chess_piece_images/" + color + "/" + type + ".png";
         new_piece.position = null;
