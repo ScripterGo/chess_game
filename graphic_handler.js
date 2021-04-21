@@ -35,15 +35,16 @@ export default class graphic_handler{
     create_marker(abs_position){
         let img_width = this.size.x/8;
         let img_height = this.size.y/8;
-        let img_marker = document.createElement("img");
+        let img_marker = document.createElement("div");
         img_marker.style.width = img_width;
         img_marker.style.height = img_height;
         img_marker.style.position = "absolute";
         img_marker.style.left = abs_position.x;
         img_marker.style.top = abs_position.y;
         
-        img_marker.style.backgroundImage = "url(./misc_imgs/fully_transparent.png)"
         img_marker.style.backgroundColor = "red";
+        img_marker.style.opacity = 0.3;
+
         return img_marker;
     }
 
@@ -72,25 +73,37 @@ export default class graphic_handler{
     is_marker_at(cell_vec_2){
         for(let i = 0; i < this.currently_marked.length; i++){
             let other_vec = this.currently_marked[i].cell_pos;
-            if(cell_vec2.compare(other_vec)){
-                return true;
+            if(cell_vec_2.is_equal(other_vec)){
+                return this.currently_marked[i];
             }
         }
         return false;
     }
 
-    mark_threatened_cells(piece){
+    toggle_threatened_cells(piece){
         let cells = piece.get_threatened_cells()
+        console.log(cells.length);
+        let to_remove = [];
         for(let i = 0; i < cells.length; i++){
-            if(!this.is_marker_at(piece.position)){
+            console.log(cells[i], "test");
+            let is_at = this.is_marker_at(cells[i])
+
+            if(is_at == false){
+                console.log("creating new marker", this.currently_marked.length)
                 let new_marker = this.create_marker(this.cell_to_pos(cells[i]));
                 let pair_obj = {
                     img_obj : new_marker,
                     cell_pos : cells[i]
                 }
                 this.currently_marked.push(pair_obj);
-                this.canvas.appendChild(new_marker);
+                document.body.appendChild(new_marker);
+            }else{
+                to_remove.push(is_at);
             }
+        }
+        for(let i = 0; i < to_remove.length; i++){
+            document.body.removeChild(to_remove[i].img_obj);
+            this.currently_marked.splice(this.currently_marked.indexOf(to_remove[i]),1);
         }
     }
 
@@ -120,13 +133,18 @@ export default class graphic_handler{
                 console.log(piece);
                 if(last_clicked_piece != null){
                     if(handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x] == null){
+                        handler.toggle_threatened_cells(last_clicked_piece);
                         handler.chess_board.move(cell_vec_2, last_clicked_piece);
-                    }else{
+                        handler.toggle_threatened_cells(last_clicked_piece);
+
+                    }else if(last_clicked_piece.color == handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x].color){
+                        handler.toggle_threatened_cells(last_clicked_piece);
                         last_clicked_piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
+                        handler.toggle_threatened_cells(last_clicked_piece);
                     }
                 }else{
                     last_clicked_piece = piece;
-                    handler.mark_threatened_cells(last_clicked_piece);
+                    handler.toggle_threatened_cells(last_clicked_piece);
                 }
             }
         };
