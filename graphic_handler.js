@@ -11,6 +11,7 @@ export default class graphic_handler{
         this.piece_imgs = [];
         this.board_img = "url(./misc_imgs/board.png)";
         this.on_click_event = new event("on_click");
+        this.new_turn_event = new event("on_new_turn");
 
         this.last_clicked_piece = null;
         this.canvas = null;
@@ -110,18 +111,29 @@ export default class graphic_handler{
     }
 
     on_click_main(rel_mouse_x, rel_mouse_y, handler, cell_vec_2){
+        if(handler.chess_board.game_obj.turn != handler.chess_board.game_obj.player_color) return;
         let piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
         console.log(piece);
         if(handler.last_clicked_piece != null){
-            if(handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x] == null){
+            let can_move_to = handler.last_clicked_piece.is_valid_move(cell_vec_2);
+            if(piece == null){
+                if(!can_move_to) return;
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
+                handler.new_turn_event.fire();
 
-            }else if(handler.last_clicked_piece.color == handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x].color){
+            }else if(handler.last_clicked_piece.color == piece.color){
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
-                handler.last_clicked_piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
+                handler.last_clicked_piece = piece;
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
+            }else if(can_move_to){
+                //Capture
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+                document.body.removeChild(piece.img_element);
+                handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+                handler.new_turn_event.fire();
             }
         }else{
             handler.last_clicked_piece = piece;

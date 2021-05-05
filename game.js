@@ -3,14 +3,41 @@ import graphics from "./graphic_handler.js";
 import piece from "./pieces/piece.js";
 import vector2 from "./math/vector.js";
 import chess_board from "./chess_board.js";
+import king from "./pieces/king.js";
+
+let colors = ["white", "black"];
 
 class game{
     constructor(){
-        this.chess_board = new chess_board();
+        this.chess_board = new chess_board(this);
         this.turn = "white";
         this.turn_count = 0;
         this.player_color = null;
     }
+
+    find_king_piece(color){
+        for(let i = 0; i <= 7; i++){
+            for(let j = 0; j <= 7; j++){
+                if(this.chess_board.grid[i][j].type == "king" && this.chess_board.grid[i][j].color == color){
+                    return new vector2(j, i);
+                }
+            }
+        }
+        return null;
+    }
+
+    is_mate(king_piece){
+        return king_piece.can_move_to_list().length > 0 || this.chess_board.is_cell_threatened(king_piece.position, king_piece.color);
+    }
+
+    main_loop(){
+        this.chess_board.graphic_handler.new_turn_event.connect(function(){
+            this.turn = colors[!colors.findIndex(this.turn)];
+            console.log("new turn!")
+        })
+    }
+
+
 }
 
 window.onload = function(){
@@ -27,6 +54,6 @@ window.onload = function(){
         console.log(handler.on_click_event.event_connections.length);
     })
     new_game.chess_board.graphic_handler.initiate_events();
-
+    new_game.main_loop();
 }
 

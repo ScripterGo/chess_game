@@ -4,8 +4,9 @@ import vector2 from "./math/vector.js";
 import piece from "./pieces/piece.js";
 
 export default class chess_board{
-    constructor(){
+    constructor(game_obj){
         this.graphic_handler = new graphics(this);
+        this.game_obj = game_obj;
         this.grid = [];
         for(let i=0; i < 8; i++){
             this.grid.push([null, null, null, null, null, null, null, null]);
@@ -20,6 +21,20 @@ export default class chess_board{
         this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
         this.graphic_handler.move(cell_vec_2, piece);
         console.log("moving");
+    }
+
+    is_cell_threatened(cell_vec_2, player_color){
+        for(let i = 0; i <= 7; i++){
+            for(let j = 0; j <= 7; j++){
+                let at = this.grid[i][j];
+                if(at == null) continue;
+                if(at.color == player_color) continue;
+                if(at.is_threat_to_cell(cell_vec_2)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     setup(start_row=0, color){
