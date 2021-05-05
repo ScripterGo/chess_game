@@ -2,13 +2,17 @@
 import chess_board from "./chess_board.js";
 import vector2 from "./math/vector.js";
 import piece from "./pieces/queen.js";
+import event from "./misc/event.js";
+
 export default class graphic_handler{
     constructor(chess_board){
         this.chess_board = chess_board;
         this.currently_marked = [];
         this.piece_imgs = [];
         this.board_img = "url(./misc_imgs/board.png)";
-        
+        this.on_click_event = new event("on_click");
+
+        this.last_clicked_piece = null;
         this.canvas = null;
         this.position = null;
         this.size = null;
@@ -81,11 +85,9 @@ export default class graphic_handler{
     }
 
     toggle_threatened_cells(piece){
-        let cells = piece.get_threatened_cells()
-        console.log(cells.length);
+        let cells = piece.can_move_to_list();
         let to_remove = [];
         for(let i = 0; i < cells.length; i++){
-            console.log(cells[i], "test");
             let is_at = this.is_marker_at(cells[i])
 
             if(is_at == false){
@@ -107,47 +109,47 @@ export default class graphic_handler{
         }
     }
 
+    on_click_main(rel_mouse_x, rel_mouse_y, handler, cell_vec_2){
+        let piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
+        console.log(piece);
+        if(handler.last_clicked_piece != null){
+            if(handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x] == null){
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+                handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
 
-    make_connections(){
+            }else if(handler.last_clicked_piece.color == handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x].color){
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+                handler.last_clicked_piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+            }
+        }else{
+            handler.last_clicked_piece = piece;
+            handler.toggle_threatened_cells(handler.last_clicked_piece);
+        }
+    }
+
+    initiate_events(){
         let board_x = this.position.x;
         let board_y = this.position.y;
         let board_x_2 = this.position.x + this.size.x;
         let board_y_2 = this.position.y + this.size.y;
         let handler = this;
-        let last_clicked_piece = null;
-
         document.body.onclick = function(event){ //will throw error if mouse is not onscreen
             console.log("clicked");
             let mouse_x = event.clientX;
             let mouse_y = event.clientY;
-            console.log(mouse_x,mouse_y);
-
             if(mouse_x >= board_x && mouse_x <= board_x_2 && mouse_y >= board_y && mouse_y <= board_y_2){
                 let rel_mouse_x = mouse_x - board_x;
                 let rel_mouse_y = mouse_y - board_y;
-                
-
                 let cell_vec_2 = handler.pos_to_cell(new vector2(rel_mouse_x, rel_mouse_y));
-                console.log(cell_vec_2.x, cell_vec_2.y);
-                let piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
-                console.log(piece);
-                if(last_clicked_piece != null){
-                    if(handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x] == null){
-                        handler.toggle_threatened_cells(last_clicked_piece);
-                        handler.chess_board.move(cell_vec_2, last_clicked_piece);
-                        handler.toggle_threatened_cells(last_clicked_piece);
-
-                    }else if(last_clicked_piece.color == handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x].color){
-                        handler.toggle_threatened_cells(last_clicked_piece);
-                        last_clicked_piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
-                        handler.toggle_threatened_cells(last_clicked_piece);
-                    }
-                }else{
-                    last_clicked_piece = piece;
-                    handler.toggle_threatened_cells(last_clicked_piece);
-                }
+                handler.on_click_event.fire(rel_mouse_x, rel_mouse_y, handler, cell_vec_2);
             }
-        };
+        }
+    }
+
+    make_connections(){
+        this.on_click_event.connect(this.on_click_main);
     }
 
 }

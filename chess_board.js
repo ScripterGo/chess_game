@@ -37,13 +37,18 @@ export default class chess_board{
             this.grid[start_row][i] = first_row[i];
             this.graphic_handler.place(new vector2(i, start_row), first_row[i]);
         }
+        if(color == "black"){
+            start_row -= 1;
+        }else{
+            start_row += 1;
+        }
         for(let i=0; i < 8; i++){
-            this.grid[start_row+1][i] = new piece("pawn", color, this);
-            this.graphic_handler.place(new vector2(i, start_row+1), this.grid[start_row+1][i])
+            this.grid[start_row][i] = new piece("pawn", color, this);
+            this.graphic_handler.place(new vector2(i, start_row), this.grid[start_row][i])
         }
     }
 
     setup_white(){this.setup(0, "white");}
-    setup_black(){this.setup(6,"black");}
+    setup_black(){this.setup(7,"black");}
 
 }
