@@ -2,7 +2,7 @@ import vector2 from "../math/vector.js";
 
 export default class knight{
     constructor(){
-        
+        this.type = "knight";
     }
 
     get_threatened_cells(){

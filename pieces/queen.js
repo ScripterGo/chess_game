@@ -3,7 +3,7 @@ import vector2 from "../math/vector.js";
 
 export default class piece{
     constructor(){
-        
+        this.type = "queen";
     }
 
     get_threatened_cells(){

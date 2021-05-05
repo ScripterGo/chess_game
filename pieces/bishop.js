@@ -2,7 +2,7 @@ import vector2 from "../math/vector.js";
 
 export default class bishop{
     constructor(){
-        
+        this.type = "bishop";
     }
 
     get_threatened_cells(){
@@ -24,6 +24,19 @@ export default class bishop{
         }
         return li;
     }
+
+    can_move_to_list(){
+        let li = this.get_threatened_cells();
+        let finalized = [];
+        for(let i = 0; i < li.length; i++){
+            let at = this.chess_board.grid[li[i].y][li[i].x];
+            if(at == null || at.color != this.color){
+                finalized.push(li[i]);
+            }
+        }
+        return finalized;
+    }
+
 }
 
 

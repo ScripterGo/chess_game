@@ -4,6 +4,7 @@ import vector2 from "../math/vector.js";
 export default class piece{
     constructor(color){
         this.y_dir = color == "white" ? 1 : -1;
+        this.type = "pawn";
     }
 
     get_threatened_cells(){

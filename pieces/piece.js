@@ -40,10 +40,30 @@ export default class piece{
             this.img_element = new_img_element;
         };
 
+        new_piece.is_valid_move = function(cell_vec2){
+            let valid_moves = new_piece.can_move_to_list();
+            for(let i = 0; i < valid_moves.length; i++){
+                if(valid_moves[i].is_equal(cell_vec2)){
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        new_piece.is_threat_to_cell = function(cell_vec_2){
+            let li = new_piece.can_move_to_list();
+            for(let i = 0; i < li.length; i++){
+                if(li[i].is_equal(cell_vec_2)){
+                    return true;
+                }
+            }
+            return false;
+        }
+
         new_piece.move = function(cell_vec2){
             let graphic_handler = this.chess_board.graphic_handler;
             let relative_pos = graphic_handler.cell_to_pos(cell_vec2);
-            
+
             this.img_element.style.top = relative_pos.y + graphic_handler.position.y;
             this.img_element.style.left = relative_pos.x + graphic_handler.position.x;
             this.position = cell_vec2;
