@@ -29,7 +29,16 @@ export default class knight{
     }
 
     can_move_to_list(){
-        
+        let li = this.get_threatened_cells();
+        let finalized = [];
+        for(let i = 0; i < li.length; i++){
+            let this_pos = li[i];
+            let at_pos = this.chess_board.grid[this_pos.y][this_pos.x]
+            if(at_pos == null || (at_pos != null && at_pos.color != this.color)){
+                finalized.push(this_pos);
+            }
+        }
+        return finalized;
     }
 
 }

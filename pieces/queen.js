@@ -31,5 +31,18 @@ export default class piece{
         return li;
     }
 
+    can_move_to_list(){
+        let cells = this.get_threatened_cells();
+        let curr_pos = this.position;
+        let finalized = [];
+        for(let i = 0; i < cells.length; i++){
+            let at_pos = this.chess_board.grid[cells[i].y][cells[i].x];
+            if(at_pos == null || at_pos.color != this.color){
+                finalized.push(cells[i]);
+            }
+        }
+        return finalized;
+    }
+
 }
 

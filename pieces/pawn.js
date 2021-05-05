@@ -26,18 +26,14 @@ export default class piece{
     can_move_to_list(){
         let y_dir = this.y_dir;
         let curr_pos = this.position;
-        let li = this.get_threathened_cells();
-        if(curr_pos.y + y_dir >= 0 && curr_pos.y + y_dir <= 7){
-            li.push(new vector2(curr_pos.x, curr_pos.y + y_dir));
-        }
+        let li = this.get_threatened_cells();
         let finalized = [];
         for(let i = 0; i < li.length; i++){
-            let cell_vec_2 = li[i];
-            let at_pos = this.chess_board.grid[cell_vec_2.y][cell_vec_2.x]
-            if(at_pos == null){
-                finalized.push(cell_vec_2);
-            }else if(at_pos.color != this.color){
-                finalized.push(cell_vec_2);
+            let cell_pos = li[i];
+            let at_pos = this.chess_board.grid[cell_pos.y][cell_pos.x];
+            let x_diff = cell_pos.subtract(curr_pos).x;
+            if((at_pos != null && at_pos.color != this.color && x_diff != 0) || (at_pos == null && x_diff == 0)){
+                finalized.push(li[i]);
             }
         }
         return finalized;
