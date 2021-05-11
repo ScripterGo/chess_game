@@ -23,12 +23,13 @@ export default class chess_board{
         console.log("moving");
     }
 
-    is_cell_threatened(cell_vec_2, player_color){
+    is_cell_threatened(cell_vec_2, player_color, for_king = false){
         for(let i = 0; i <= 7; i++){
             for(let j = 0; j <= 7; j++){
                 let at = this.grid[i][j];
                 if(at == null) continue;
                 if(at.color == player_color) continue;
+                if(for_king && at.type == "king") continue;
                 if(at.is_threat_to_cell(cell_vec_2)){
                     return true;
                 }

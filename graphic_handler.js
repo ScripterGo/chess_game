@@ -109,11 +109,11 @@ export default class graphic_handler{
             this.currently_marked.splice(this.currently_marked.indexOf(to_remove[i]),1);
         }
     }
-
+    
     on_click_main(rel_mouse_x, rel_mouse_y, handler, cell_vec_2){
-        if(handler.chess_board.game_obj.turn != handler.chess_board.game_obj.player_color) return;
+        //if(handler.chess_board.game_obj.turn != handler.chess_board.game_obj.player_color) return;
         let piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
-        console.log(piece);
+        //if(handler.last_clicked_piece != null && handler.chess_board.game_obj.turn != handler.last_clicked_piece.color) return;
         if(handler.last_clicked_piece != null){
             let can_move_to = handler.last_clicked_piece.is_valid_move(cell_vec_2);
             if(piece == null){
@@ -122,7 +122,7 @@ export default class graphic_handler{
                 handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.new_turn_event.fire();
-
+                
             }else if(handler.last_clicked_piece.color == piece.color){
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.last_clicked_piece = piece;
@@ -134,6 +134,11 @@ export default class graphic_handler{
                 handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.new_turn_event.fire();
+            }else{
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+                handler.last_clicked_piece = piece;
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+
             }
         }else{
             handler.last_clicked_piece = piece;
