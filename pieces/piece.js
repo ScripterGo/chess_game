@@ -51,6 +51,7 @@ export default class piece{
         };
 
         new_piece.is_threat_to_cell = function(cell_vec_2){
+            console.log(new_piece.type);
             let li = new_piece.can_move_to_list();
             for(let i = 0; i < li.length; i++){
                 if(li[i].is_equal(cell_vec_2)){

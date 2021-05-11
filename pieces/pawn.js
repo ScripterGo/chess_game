@@ -8,20 +8,16 @@ export default class piece{
     }
 
     get_threatened_cells(){
-        let y_dir = this.y_dir;
-        let li = [
-            new vector2(0, y_dir),
-            new vector2(1, y_dir),
-            new vector2(-1, y_dir)
-        ];
-        let finalized = [];
-        for(let i = 0; i < li.length; i++){
-            let curr_pos = this.position.add(li[i])
-            if(curr_pos.x >= 0 && curr_pos.x <= 7 && curr_pos.y >= 0 && curr_pos.y <= 7){
-                finalized.push(new vector2(curr_pos.x, curr_pos.y));
+        let li = [];
+        let curr_pos = this.position;
+        let res_y = curr_pos.y + this.y_dir;
+        if(res_y >= 0 && res_y <= 7){
+            if(curr_pos.x + 1 <= 7 && this.chess_board.grid[res_y][curr_pos.x+1]){
+                li.push(new vector2())
             }
         }
-        return finalized;
+
+        if(curr_pos.y + this.y_dir > this.chess_board.grid[curr_pos.y][curr_pos.x])
     }
 
     can_move_to_list(){
