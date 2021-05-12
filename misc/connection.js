@@ -6,7 +6,6 @@ export default class connection{
     }
 
     fire(args){
-        console.log(args);
         this.func(...args);
     }
 
