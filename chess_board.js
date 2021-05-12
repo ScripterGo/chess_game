@@ -18,9 +18,22 @@ export default class chess_board{
         if(piece_pos != null && this.grid[piece_pos.y][piece_pos.x] == piece){
             this.grid[piece_pos.y][piece_pos.x] = null;
         }
+        let at = this.grid[cell_vec_2.y][cell_vec_2.x];
+        if(at != null){
+            document.body.removeChild(at.img_element);
+        }
         this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
         this.graphic_handler.move(cell_vec_2, piece);
-        console.log("moving");
+        //console.log("moving");
+    }
+
+    move_no_graphics(cell_vec_2, piece){ //Used for backtracking
+        let piece_pos = piece.position;
+        if(piece_pos != null && this.grid[piece_pos.y][piece_pos.x] == piece){
+            this.grid[piece_pos.y][piece_pos.x] = null;
+        }
+        this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
+        piece.move_no_graphics(cell_vec_2);
     }
 
     is_cell_threatened(cell_vec_2, player_color, for_king = false){
@@ -29,7 +42,6 @@ export default class chess_board{
                 let at = this.grid[i][j];
                 if(at == null) continue;
                 if(at.color == player_color) continue;
-                if(for_king && at.type == "king") continue;
                 if(at.is_threat_to_cell(cell_vec_2)){
                     return true;
                 }
