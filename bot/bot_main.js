@@ -25,7 +25,9 @@ export default class bot{ //The bot should minimize and the player should maximi
         return player_piece_count - bot_piece_count;
     }
 
-    search(d = 3, color){
+
+
+    search(d = 3, color){ //Recursive backtracking
         if(d == 0) return [this.evaluate_board()];
 
         let best = 100000;
@@ -62,8 +64,42 @@ export default class bot{ //The bot should minimize and the player should maximi
         return [best, best_move];
     }
 
+    search_in_space(space){ //where space is an array containing [piece, cell_vec2]
+        let curr_best = 1000000;
+        let best_move;
+        let grid = this.chess_board.grid;
+        for(let i = 0; i < space.length; i++){
+            let t_pos = space[i][1];
+            let piece = space[i][0];
+            let s_pos = piece.position;
+            let has_moved = piece.has_moved;
+            let at_t_pos = grid[t_pos.y][t_pos.x];
+
+            this.chess_board.move_no_graphics(t_pos, piece);
+            let score = this.evaluate_board();
+            this.chess_board.move_no_graphics(s_pos, piece);
+            grid[t_pos.y][t_pos.x] = at_t_pos;
+            piece.has_moved = has_moved;
+
+            if(score < curr_best){
+                curr_best = score;
+                best_move = space[i];
+            }
+        }
+        return [curr_best, best_move];
+    }
+
     make_move(){
-        let res = this.search(2, this.color);
+        let game_obj = this.chess_board.game_obj;
+        let res;
+        let king_piece = game_obj.find_king_piece(this.color)
+        if(game_obj.is_king_threatened(king_piece)){
+            let possible_moves = game_obj.explore_mate_breaks(king_piece);
+            res = this.search_in_space(possible_moves);
+        }else{
+            res = this.search(3, this.color);
+        }
+
         let board_score = res[0];
         let move = res[1];
         let piece = move[0];
