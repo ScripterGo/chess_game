@@ -51,8 +51,7 @@ export default class piece{
         };
 
         new_piece.is_threat_to_cell = function(cell_vec_2){
-            console.log(new_piece.type);
-            let li = new_piece.can_move_to_list();
+            let li = new_piece.get_threatened_cells();
             for(let i = 0; i < li.length; i++){
                 if(li[i].is_equal(cell_vec_2)){
                     return true;
@@ -64,18 +63,29 @@ export default class piece{
         new_piece.move = function(cell_vec2){
             let graphic_handler = this.chess_board.graphic_handler;
             let relative_pos = graphic_handler.cell_to_pos(cell_vec2);
+            if(new_piece.type == "pawn"){
+                new_piece.has_moved = true;
+            }
 
             this.img_element.style.top = relative_pos.y + graphic_handler.position.y;
             this.img_element.style.left = relative_pos.x + graphic_handler.position.x;
             this.position = cell_vec2;
         }
-    
+
+        new_piece.move_no_graphics = function(cell_vec2){
+            if(new_piece.type == "pawn"){
+                new_piece.has_moved = true;
+            }
+            this.position = cell_vec2;
+        }
+        
         new_piece.spawn = function(){
             if(this.img_element == null){
                 console.error("You have to create the img element first")
             }else if(this.img_element.parentElement == document.body){
                 console.error("This piece had already been spawned");
             }
+            if(new_piece.type == "pawn") new_piece.has_moved = false;
             document.body.appendChild(this.img_element);
         }
         return new_piece;
