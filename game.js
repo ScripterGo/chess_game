@@ -11,10 +11,10 @@ import utility from "./misc/utility.js";
 class game{
     constructor(){
         this.chess_board = new chess_board(this);
-        this.turn = "white";
+        this.turn = "black";
         this.turn_count = 0;
         this.player_color = null;
-        this.bot = new bot(this.chess_board, "white");
+        this.bot = new bot(this.chess_board, "black");
     }
 
     find_king_piece(color){
@@ -57,9 +57,13 @@ class game{
         return li;
     }
 
+    is_king_threatened(king_piece){
+        return this.chess_board.is_cell_threatened(king_piece.position, king_piece.color);
+    }
+
     is_mate(king_piece){
         let can_move = king_piece.can_move_to_list().length > 0;
-        let is_threatened = this.chess_board.is_cell_threatened(king_piece.position, king_piece.color);
+        let is_threatened = this.is_king_threatened(king_piece);
         if(can_move || !is_threatened){
             return false;
         }else{
@@ -74,22 +78,22 @@ class game{
 
         let connection = this.chess_board.graphic_handler.new_turn_event.connect(function(){
             game_obj.turn = ut.other_color(game_obj.turn);
+            console.log("new turn!", game_obj.turn);
             graphic_handler.clear_all_threatened_cells();
             graphic_handler.last_clicked_piece = null;
             if(game_obj.turn != game_obj.player_color){
                 if(game_obj.is_mate(game_obj.find_king_piece(game_obj.bot.color))){
-                    console.log("The bot won!");
+                    console.log("The player won!");
                     graphic_handler.new_turn_event.disconnect_connection(connection);
                 }else{
                     game_obj.bot.make_move();
                 }
             }else{
                 if(game_obj.is_mate(game_obj.find_king_piece(game_obj.player_color))){
-                    console.log("The player won!");
+                    console.log("The bot won!");
                     graphic_handler.new_turn_event.disconnect_connection(connection);
                 }
             }
-            console.log("new turn!", game_obj.turn);
         })
     }
 
@@ -108,6 +112,7 @@ window.onload = function(){
         if(at_pos != null){
             new_game.player_color = at_pos.color;
             new_game.bot.color = utility.other_color(new_game.player_color);
+            handler.new_turn_event.fire();
             handler.on_click_event.disconnect_connection(connection);
             console.log(new_game.player_color);
         }
