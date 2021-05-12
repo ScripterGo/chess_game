@@ -40,6 +40,7 @@ export default class piece{
             let at_pos = this.chess_board.grid[cell_pos.y][cell_pos.x];
             let x_diff = cell_pos.subtract(curr_pos).x;
             if((at_pos != null && at_pos.color != this.color && x_diff != 0) || (at_pos == null && x_diff == 0)){
+                if(!this.run_move_checks(cell_pos)) continue;
                 finalized.push(li[i]);
             }
         }

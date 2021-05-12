@@ -40,6 +40,22 @@ export default class piece{
             this.img_element = new_img_element;
         };
 
+        new_piece.run_move_checks = function(new_pos){ //true if passed
+            let grid = this.chess_board.grid;
+            let old_pos = new vector2(this.position.x, this.position.y);
+            let has_moved_old = this.has_moved;
+            let at_new = grid[new_pos.y][new_pos.x];
+            let king_piece = chess_board.game_obj.find_king_piece(this.color);
+            let flag = true;
+
+            new_piece.chess_board.move_no_graphics(new_pos, this);
+            flag = !new_piece.chess_board.game_obj.is_king_threatened(king_piece);
+            new_piece.chess_board.move_no_graphics(old_pos, this);
+            this.has_moved = has_moved_old;
+            grid[new_pos.y][new_pos.x] = at_new;
+            return flag;
+        }
+
         new_piece.is_valid_move = function(cell_vec2){
             let valid_moves = new_piece.can_move_to_list();
             for(let i = 0; i < valid_moves.length; i++){

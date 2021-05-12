@@ -29,7 +29,7 @@ export default class rook{
         let finalized = [];
         for(let i = 0; i < li.length; i++){
             let at = this.chess_board.grid[li[i].y][li[i].x];
-            if(at == null || at.color != this.color){
+            if((at == null || at.color != this.color) && this.run_move_checks(li[i])){
                 finalized.push(li[i]);
             }
         }

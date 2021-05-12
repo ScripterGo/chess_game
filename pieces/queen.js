@@ -37,7 +37,7 @@ export default class piece{
         let finalized = [];
         for(let i = 0; i < cells.length; i++){
             let at_pos = this.chess_board.grid[cells[i].y][cells[i].x];
-            if(at_pos == null || at_pos.color != this.color){
+            if((at_pos == null || at_pos.color != this.color) && this.run_move_checks(cells[i])){
                 finalized.push(cells[i]);
             }
         }
