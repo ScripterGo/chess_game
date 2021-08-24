@@ -34,7 +34,7 @@ export default class knight{
         for(let i = 0; i < li.length; i++){
             let this_pos = li[i];
             let at_pos = this.chess_board.grid[this_pos.y][this_pos.x]
-            if(at_pos == null || (at_pos != null && at_pos.color != this.color)){
+            if((at_pos == null || (at_pos != null && at_pos.color != this.color)) && this.run_move_checks(this_pos)){
                 finalized.push(this_pos);
             }
         }
