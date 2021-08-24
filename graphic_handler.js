@@ -85,6 +85,14 @@ export default class graphic_handler{
         return false;
     }
 
+    clear_all_threatened_cells(){
+        while(this.currently_marked.length > 0){
+            let top = this.currently_marked[this.currently_marked.length - 1];
+            document.body.removeChild(top.img_obj);
+            this.currently_marked.pop();
+        }
+    }
+
     toggle_threatened_cells(piece){
         let cells = piece.can_move_to_list();
         let to_remove = [];
@@ -92,7 +100,7 @@ export default class graphic_handler{
             let is_at = this.is_marker_at(cells[i])
 
             if(is_at == false){
-                console.log("creating new marker", this.currently_marked.length)
+                //console.log("creating new marker", this.currently_marked.length)
                 let new_marker = this.create_marker(this.cell_to_pos(cells[i]));
                 let pair_obj = {
                     img_obj : new_marker,
@@ -109,11 +117,12 @@ export default class graphic_handler{
             this.currently_marked.splice(this.currently_marked.indexOf(to_remove[i]),1);
         }
     }
-
+    
     on_click_main(rel_mouse_x, rel_mouse_y, handler, cell_vec_2){
         if(handler.chess_board.game_obj.turn != handler.chess_board.game_obj.player_color) return;
         let piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
         console.log(piece);
+        //if(handler.last_clicked_piece != null && handler.chess_board.game_obj.turn != handler.last_clicked_piece.color) return;
         if(handler.last_clicked_piece != null){
             let can_move_to = handler.last_clicked_piece.is_valid_move(cell_vec_2);
             if(piece == null){
@@ -122,7 +131,7 @@ export default class graphic_handler{
                 handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.new_turn_event.fire();
-
+                
             }else if(handler.last_clicked_piece.color == piece.color){
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.last_clicked_piece = piece;
@@ -130,10 +139,14 @@ export default class graphic_handler{
             }else if(can_move_to){
                 //Capture
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
-                document.body.removeChild(piece.img_element);
                 handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.new_turn_event.fire();
+            }else{
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+                handler.last_clicked_piece = piece;
+                handler.toggle_threatened_cells(handler.last_clicked_piece);
+
             }
         }else{
             handler.last_clicked_piece = piece;
@@ -148,7 +161,6 @@ export default class graphic_handler{
         let board_y_2 = this.position.y + this.size.y;
         let handler = this;
         document.body.onclick = function(event){ //will throw error if mouse is not onscreen
-            console.log("clicked");
             let mouse_x = event.clientX;
             let mouse_y = event.clientY;
             if(mouse_x >= board_x && mouse_x <= board_x_2 && mouse_y >= board_y && mouse_y <= board_y_2){

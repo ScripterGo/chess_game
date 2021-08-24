@@ -18,12 +18,25 @@ export default class chess_board{
         if(piece_pos != null && this.grid[piece_pos.y][piece_pos.x] == piece){
             this.grid[piece_pos.y][piece_pos.x] = null;
         }
+        let at = this.grid[cell_vec_2.y][cell_vec_2.x];
+        if(at != null){
+            document.body.removeChild(at.img_element);
+        }
         this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
         this.graphic_handler.move(cell_vec_2, piece);
-        console.log("moving");
+        //console.log("moving");
     }
 
-    is_cell_threatened(cell_vec_2, player_color){
+    move_no_graphics(cell_vec_2, piece){ //Used for backtracking
+        let piece_pos = piece.position;
+        if(piece_pos != null && this.grid[piece_pos.y][piece_pos.x] == piece){
+            this.grid[piece_pos.y][piece_pos.x] = null;
+        }
+        this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
+        piece.move_no_graphics(cell_vec_2);
+    }
+
+    is_cell_threatened(cell_vec_2, player_color, for_king = false){
         for(let i = 0; i <= 7; i++){
             for(let j = 0; j <= 7; j++){
                 let at = this.grid[i][j];
