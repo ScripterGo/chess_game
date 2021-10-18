@@ -71,11 +71,11 @@ export default class graphic_handler{
         piece.spawn();
     }
 
-    move(cell_vec2, piece){
+    move(cell_vec2, piece){ //
         piece.move(cell_vec2);
     }
 
-    is_marker_at(cell_vec_2){
+    is_marker_at(cell_vec_2){ //Is this cell marked?
         for(let i = 0; i < this.currently_marked.length; i++){
             let other_vec = this.currently_marked[i].cell_pos;
             if(cell_vec_2.is_equal(other_vec)){
@@ -85,7 +85,7 @@ export default class graphic_handler{
         return false;
     }
 
-    clear_all_threatened_cells(){
+    clear_all_threatened_cells(){ //Unmark all marked cells
         while(this.currently_marked.length > 0){
             let top = this.currently_marked[this.currently_marked.length - 1];
             document.body.removeChild(top.img_obj);
@@ -93,7 +93,7 @@ export default class graphic_handler{
         }
     }
 
-    toggle_threatened_cells(piece){
+    toggle_threatened_cells(piece){ //Mark or unmark cells that piece threatens
         let cells = piece.can_move_to_list();
         let to_remove = [];
         for(let i = 0; i < cells.length; i++){
@@ -123,38 +123,38 @@ export default class graphic_handler{
         let piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
         console.log(piece);
         //if(handler.last_clicked_piece != null && handler.chess_board.game_obj.turn != handler.last_clicked_piece.color) return;
-        if(handler.last_clicked_piece != null){
+        if(handler.last_clicked_piece != null){ //last clicked piece is the last piece that was clicked, if a square without a piece is clicked, then that last clicked piece should be moved.
             let can_move_to = handler.last_clicked_piece.is_valid_move(cell_vec_2);
-            if(piece == null){
+            if(piece == null){ //Move lastclicked piece
                 if(!can_move_to) return;
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.new_turn_event.fire();
                 
-            }else if(handler.last_clicked_piece.color == piece.color){
+            }else if(handler.last_clicked_piece.color == piece.color){ //Otherwise if the piece's colors are the same, toggle and update last_clicked_piece
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.last_clicked_piece = piece;
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
-            }else if(can_move_to){
+            }else if(can_move_to){ //The color of piece is opposite, can we take it?
                 //Capture
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.chess_board.move(cell_vec_2, handler.last_clicked_piece);
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.new_turn_event.fire();
-            }else{
+            }else{ //If we cannot take it, update last_clicked_piece to be that of the enemy, (for testing)
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
                 handler.last_clicked_piece = piece;
                 handler.toggle_threatened_cells(handler.last_clicked_piece);
 
             }
-        }else{
+        }else{ //If we have not clicked any piece
             handler.last_clicked_piece = piece;
             handler.toggle_threatened_cells(handler.last_clicked_piece);
         }
     }
 
-    initiate_events(){
+    initiate_events(){ //Initiates the custom events
         let board_x = this.position.x;
         let board_y = this.position.y;
         let board_x_2 = this.position.x + this.size.x;
@@ -172,7 +172,7 @@ export default class graphic_handler{
         }
     }
 
-    make_connections(){
+    make_connections(){ //making the head connections to the events
         this.on_click_event.connect(this.on_click_main);
     }
 

@@ -28,6 +28,8 @@ export default class king{
         return finalized;
     }
 
+    
+
     can_move_to_list(){
         let li = this.get_threatened_cells();
         let finalized = [];

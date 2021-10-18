@@ -12,6 +12,7 @@ class game{
     constructor(){
         this.chess_board = new chess_board(this);
         this.turn = "black";
+        this.last_action = 0; //When was the last time there was a capture or pawn move?
         this.turn_count = 0;
         this.player_color = null;
         this.bot = new bot(this.chess_board, "black");
@@ -96,8 +97,6 @@ class game{
             }
         })
     }
-
-
 }
 
 window.onload = function(){

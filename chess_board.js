@@ -2,14 +2,23 @@
 import graphics from "./graphic_handler.js";
 import vector2 from "./math/vector.js";
 import piece from "./pieces/piece.js";
+import _event from "./mis/event.js";
 
 export default class chess_board{
     constructor(game_obj){
         this.graphic_handler = new graphics(this);
+        this.on_capture = new _event("on_capture");
         this.game_obj = game_obj;
         this.grid = [];
         for(let i=0; i < 8; i++){
             this.grid.push([null, null, null, null, null, null, null, null]);
+        }
+    }
+
+    
+    capture_check(cell_vec_2){
+        if(this.grid[cell_vec_2.y][cell_vec_2.x] != null){
+            this.on_capture.fire(cell_vec_2);
         }
     }
 
@@ -22,6 +31,7 @@ export default class chess_board{
         if(at != null){
             document.body.removeChild(at.img_element);
         }
+        this.capture_check(cell_vec_2);
         this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
         this.graphic_handler.move(cell_vec_2, piece);
         //console.log("moving");
@@ -32,6 +42,7 @@ export default class chess_board{
         if(piece_pos != null && this.grid[piece_pos.y][piece_pos.x] == piece){
             this.grid[piece_pos.y][piece_pos.x] = null;
         }
+        this.capture_check(cell_vec_2);
         this.grid[cell_vec_2.y][cell_vec_2.x] = piece;
         piece.move_no_graphics(cell_vec_2);
     }

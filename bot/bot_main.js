@@ -2,6 +2,8 @@
 import vector2 from "../math/vector.js"
 import utility from "../misc/utility.js"
 
+let search_counter = 0;
+
 export default class bot{ //The bot should minimize and the player should maximize
     constructor(chess_board, color){
         this.chess_board = chess_board;
@@ -26,9 +28,12 @@ export default class bot{ //The bot should minimize and the player should maximi
     }
 
 
-
-    search(d = 3, color){ //Recursive backtracking
-        if(d == 0) return [this.evaluate_board()];
+    //bot wants to maximize, the player wants to minimize
+    search(d = 4, color){ //Recursive backtracking
+        if(d == 0){
+            search_counter ++;
+            return [this.evaluate_board()];
+        }
 
         let best = 100000;
         if(color != this.color) best = -10000;
@@ -93,17 +98,20 @@ export default class bot{ //The bot should minimize and the player should maximi
         let game_obj = this.chess_board.game_obj;
         let res;
         let king_piece = game_obj.find_king_piece(this.color)
+        search_counter = 0;
         if(game_obj.is_king_threatened(king_piece)){
             let possible_moves = game_obj.explore_mate_breaks(king_piece);
             res = this.search_in_space(possible_moves);
         }else{
-            res = this.search(3, this.color);
+            res = this.search(4, this.color);
         }
 
         let board_score = res[0];
         let move = res[1];
         let piece = move[0];
         let t_pos = move[1];
+        console.log(res);
+        console.log(search_counter);
 
         this.chess_board.move(t_pos, piece);
         this.chess_board.graphic_handler.new_turn_event.fire();
