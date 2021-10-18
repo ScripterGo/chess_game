@@ -119,6 +119,7 @@ export default class graphic_handler{
     }
     
     on_click_main(rel_mouse_x, rel_mouse_y, handler, cell_vec_2){
+        //handler.chess_board.print_out();
         if(handler.chess_board.game_obj.turn != handler.chess_board.game_obj.player_color) return;
         let piece = handler.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
         console.log(piece);
@@ -149,6 +150,7 @@ export default class graphic_handler{
 
             }
         }else{ //If we have not clicked any piece
+            if(piece == null){return;}
             handler.last_clicked_piece = piece;
             handler.toggle_threatened_cells(handler.last_clicked_piece);
         }

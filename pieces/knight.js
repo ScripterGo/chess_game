@@ -1,8 +1,11 @@
 import vector2 from "../math/vector.js";
+import common from "./piece.js";
 
-export default class knight{
-    constructor(){
-        this.type = "knight";
+
+//type "knight"
+export default class knight extends common{
+    constructor(type, color, chess_board){
+        super(type, color, chess_board);
     }
 
     get_threatened_cells(){

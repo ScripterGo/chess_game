@@ -1,9 +1,9 @@
 import vector2 from "../math/vector.js";
+import common from "./piece.js";
 
-
-export default class king{
-    constructor(){
-        this.type = "king";
+export default class king extends common{
+    constructor(type, color, chess_board){
+        super(type, color, chess_board);
     }
 
     get_threatened_cells(){ //does not bother to check if same colored pieced are on threat cells
@@ -28,7 +28,13 @@ export default class king{
         return finalized;
     }
 
-    
+    can_kingside_castle(){
+        let board = this.chess_board;
+
+
+    }
+
+
 
     can_move_to_list(){
         let li = this.get_threatened_cells();

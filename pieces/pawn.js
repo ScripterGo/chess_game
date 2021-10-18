@@ -1,12 +1,14 @@
+// @ts-check
 import vector2 from "../math/vector.js";
+import common from "./piece.js";
 
-
-export default class piece{
-    constructor(color){
+//type "pawn"
+export default class piece extends common{
+    constructor(type, color, chess_board){
+        super(type, color, chess_board);
         this.y_dir = color == "white" ? 1 : -1;
-        this.type = "pawn";
         this.has_moved = false;
-    }
+    }   
 
     get_threatened_cells(){
         let li = [];

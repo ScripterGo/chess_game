@@ -30,6 +30,7 @@ export default class bot{ //The bot should minimize and the player should maximi
 
     //bot wants to maximize, the player wants to minimize
     search(d = 4, color){ //Recursive backtracking
+        //console.log("Searching... ");
         if(d == 0){
             search_counter ++;
             return [this.evaluate_board()];
@@ -48,7 +49,7 @@ export default class bot{ //The bot should minimize and the player should maximi
                 let move_list = at.can_move_to_list();
                 let start_pos = at.position;
                 let start_has_moved = at.has_moved;
-
+                
                 for(let k = 0; k < move_list.length; k++){
                     let t_pos = move_list[k];
                     let at_t_pos = grid[t_pos.y][t_pos.x];
@@ -70,6 +71,7 @@ export default class bot{ //The bot should minimize and the player should maximi
     }
 
     search_in_space(space){ //where space is an array containing [piece, cell_vec2]
+        //console.log("searching in space : ", space);
         let curr_best = 1000000;
         let best_move;
         let grid = this.chess_board.grid;
@@ -114,7 +116,6 @@ export default class bot{ //The bot should minimize and the player should maximi
         console.log(search_counter);
 
         this.chess_board.move(t_pos, piece);
-        this.chess_board.graphic_handler.new_turn_event.fire();
     }
 }
 

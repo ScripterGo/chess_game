@@ -1,8 +1,8 @@
 
 import graphics from "./graphic_handler.js";
 import vector2 from "./math/vector.js";
-import piece from "./pieces/piece.js";
-import _event from "./mis/event.js";
+import create_piece from "./game_util/create_piece.js";
+import _event from "./misc/event.js";
 
 export default class chess_board{
     constructor(game_obj){
@@ -14,7 +14,6 @@ export default class chess_board{
             this.grid.push([null, null, null, null, null, null, null, null]);
         }
     }
-
     
     capture_check(cell_vec_2){
         if(this.grid[cell_vec_2.y][cell_vec_2.x] != null){
@@ -63,14 +62,14 @@ export default class chess_board{
 
     setup(start_row=0, color){
         let first_row = [
-            new piece("rook", color, this),
-            new piece("knight", color, this),
-            new piece("bishop", color, this),
-            new piece("king", color, this),
-            new piece("queen", color, this),
-            new piece("bishop", color, this),
-            new piece("knight", color, this),
-            new piece("rook", color, this)
+            create_piece("rook", color, this),
+            create_piece("knight", color, this),
+            create_piece("bishop", color, this),
+            create_piece("king", color, this),
+            create_piece("queen", color, this),
+            create_piece("bishop", color, this),
+            create_piece("knight", color, this),
+            create_piece("rook", color, this)
         ]
         for(let i=0; i < 8; i++){
             this.grid[start_row][i] = first_row[i];
@@ -82,12 +81,21 @@ export default class chess_board{
             start_row += 1;
         }
         for(let i=0; i < 8; i++){
-            this.grid[start_row][i] = new piece("pawn", color, this);
+            this.grid[start_row][i] = create_piece("pawn", color, this);
             this.graphic_handler.place(new vector2(i, start_row), this.grid[start_row][i])
         }
     }
-
     setup_white(){this.setup(0, "white");}
     setup_black(){this.setup(7,"black");}
+
+    print_out(){
+        for(let i = 0; i < 8; i++){
+            for(let j = 0; j < 8; j++){
+                console.log(this.grid[i][j]);
+            }
+            console.log("\n");
+        }
+    }
+
 
 }

@@ -1,8 +1,9 @@
 import vector2 from "../math/vector.js";
+import common from "./piece.js";
 
-export default class bishop{
-    constructor(){
-        this.type = "bishop";
+export default class bishop extends common{
+    constructor(type, color, chess_board){  
+        super(type, color, chess_board);
     }
 
     get_threatened_cells(){

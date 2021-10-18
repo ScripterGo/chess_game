@@ -1,6 +1,6 @@
 
 import graphics from "./graphic_handler.js";
-import piece from "./pieces/piece.js";
+import create_piece from "./game_util/create_piece.js";
 import vector2 from "./math/vector.js";
 import chess_board from "./chess_board.js";
 import king from "./pieces/king.js";
@@ -11,11 +11,11 @@ import utility from "./misc/utility.js";
 class game{
     constructor(){
         this.chess_board = new chess_board(this);
-        this.turn = "black";
+        this.turn = "white";
         this.last_action = 0; //When was the last time there was a capture or pawn move?
         this.turn_count = 0;
         this.player_color = null;
-        this.bot = new bot(this.chess_board, "black");
+        this.bot = new bot(this.chess_board, null);
     }
 
     find_king_piece(color){
@@ -78,24 +78,30 @@ class game{
         let graphic_handler = this.chess_board.graphic_handler;
 
         let connection = this.chess_board.graphic_handler.new_turn_event.connect(function(){
-            game_obj.turn = ut.other_color(game_obj.turn);
             console.log("new turn!", game_obj.turn);
+            //chess_board.print_out();
             graphic_handler.clear_all_threatened_cells();
             graphic_handler.last_clicked_piece = null;
+            
             if(game_obj.turn != game_obj.player_color){
                 if(game_obj.is_mate(game_obj.find_king_piece(game_obj.bot.color))){
                     console.log("The player won!");
                     graphic_handler.new_turn_event.disconnect_connection(connection);
                 }else{
                     game_obj.bot.make_move();
+                    game_obj.turn = game_obj.player_color;
                 }
             }else{
                 if(game_obj.is_mate(game_obj.find_king_piece(game_obj.player_color))){
                     console.log("The bot won!");
                     graphic_handler.new_turn_event.disconnect_connection(connection);
+                }else{
+                    game_obj.turn = game_obj.bot.color;
+                    graphic_handler.new_turn_event.fire();
                 }
             }
         })
+        if(this.player_color == "black") graphic_handler.new_turn_event.fire();
     }
 }
 
@@ -105,18 +111,22 @@ window.onload = function(){
     new_game.chess_board.setup_white();
     new_game.chess_board.setup_black();
 
+    let test_piece = create_piece("queen", "white", new_game.chess_board);
+    console.log(test_piece);
+
+    new_game.chess_board.graphic_handler.initiate_events();
     new_game.chess_board.graphic_handler.make_connections();
+    
     let connection = new_game.chess_board.graphic_handler.on_click_event.connect(function(rel_mouse_x, rel_mouse_y, handler, cell_vec_2){
         let at_pos = new_game.chess_board.grid[cell_vec_2.y][cell_vec_2.x];
         if(at_pos != null){
             new_game.player_color = at_pos.color;
             new_game.bot.color = utility.other_color(new_game.player_color);
-            handler.new_turn_event.fire();
             handler.on_click_event.disconnect_connection(connection);
+            new_game.main_loop();
             console.log(new_game.player_color);
         }
     })
-    new_game.chess_board.graphic_handler.initiate_events();
-    new_game.main_loop();
+
 }
 
